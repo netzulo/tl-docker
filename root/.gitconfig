@@ -1,0 +1,29 @@
+[user]
+        name = netzulo
+        email = netzuleando@gmail.com
+[alias]
+        lg = log --color --graph --abbrev-commit --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset'
+        st = status
+        co = checkout --ignore-other-worktrees
+        br = branch
+        rt = remote
+        slog = log --stat
+        df = difftool -y
+        ft = fetch -a -p
+        wt = worktree
+        wtl = worktree list
+        wta = worktree add
+        wtp = worktree prune
+        tags = tag -l
+        diffs = diff --staged
+        commitfiles = show --name-only --format=
+        squash = rebase -i --autosquash
+[push]
+        default = simple
+        followTags = true
+[credential]
+        helper = cache --timeout=7200
+[http]
+        sslVerify = false
+[remote "origin"]
+        fetch = +refs/pull/*/head:refs/remotes/origin/pr/*
