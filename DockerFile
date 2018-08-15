@@ -5,39 +5,51 @@
 #
 
 # Pull base image.
-FROM ubuntu:14.04
+FROM ubuntu:18.04
 
-LABEL com.example.version="0.0.1-beta"
+MAINTAINER Netzulo.com
+
+LABEL version="0.0.1-dev3"
 LABEL vendor="Netzulo OpenSource Development"
-LABEL com.example.release-date="2018-08-12"
-LABEL com.example.version.is-production=""
+LABEL release-date="2018-08-12"
+LABEL version.is-production=""
 
-# Install.
-RUN \
-  sed -i 's/# \(.*multiverse$\)/\1/g' /etc/apt/sources.list && \
-  apt-get update && \
-  apt-get -y upgrade && \
-  apt-get install -y build-essential && \
-  apt-get install -y software-properties-common && \
-  apt-get install -y byobu curl git htop man unzip vim wget nginx && \
-  rm -rf /var/lib/apt/lists/*
+# ENVironment variables
+ENV DEBIAN_FRONTEND noninteractive
+
+# Update SO
+RUN apt-get update
+RUN apt-get install -y software-properties-common systemd
+RUN apt-get clean
+# Install
+RUN apt-get install -y curl git htop man unzip vim wget telnet net-tools
+
+# ~ install testlink webserver
+RUN apt-get install -y nginx
+
+# Add files
+## default configuration for webserver
+ADD root/default-nginx /etc/nginx/sites-available/default
+ADD root/nginx.service /lib/systemd/system/nginx.service
+## default configuration for git
+ADD root/.gitconfig /root/.gitconfig
 
 # Clone testlink repository
 RUN \
-  cd /var/www/ \
+  mkdir -p /var/www && \
+  cd /var/www && \
   git clone -b master https://github.com/netzulo/testlink-code
 
-# Add files.
-#ADD root/.bashrc /root/.bashrc
-ADD root/.gitconfig /root/.gitconfig
-#ADD root/.scripts /root/.scripts
-
-# Set environment variables.
+# Set environment variables
 ENV HOME /root
 
-# Define working directory.
+# Define working directory
 WORKDIR /root
 
-# Expose ports for nginx
+# Expose ports for nginx ( just documented, not neccessary )
 EXPOSE 80/tcp
 EXPOSE 80/udp
+
+# Start new container
+CMD ['/bin/bash']
+

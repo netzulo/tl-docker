@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  testlink:
+    build: '.'
+    image: 'netzuloqa/testlink'
+    volumes:
+      - '/opt/containers/tl-docker/volumes/tl_data'
+    ports:
+      - "88:80"
+      - "8443:443"
+
