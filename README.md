@@ -18,5 +18,9 @@ Testlink Docker Custom Image
 
 ### Delete temp images while development
 
-+ 1. Ensure what you need to delete it: ```docker ps -a && docker images -a```
++ Ensure what you need to delete it: ```docker ps -a && docker images -a```
+
+### Using an alias to rebuild fast while development
+
++ Add this alias to your  ```~/.bashrc``` : ```alias tl-docker='docker build -t netzuloqa/testlink --file ./DockerFile . && docker run -it -p 88:80 netzuloqa/testlink /bin/bash'```
 

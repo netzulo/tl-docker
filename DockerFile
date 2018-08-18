@@ -9,7 +9,7 @@ FROM ubuntu:18.04
 
 MAINTAINER Netzulo.com
 
-LABEL version="0.0.1-dev3"
+LABEL version="0.0.2"
 LABEL vendor="Netzulo OpenSource Development"
 LABEL release-date="2018-08-12"
 LABEL version.is-production=""
@@ -25,12 +25,17 @@ RUN apt-get clean
 RUN apt-get install -y curl git htop man unzip vim wget telnet net-tools
 
 # ~ install testlink webserver
+RUN apt-get install -y php php-cli php-pear php-fpm php-dev php-zip php-curl php-xmlrpc php-gd php-mysql php-mbstring php-xml libapache2-mod-php php-cgi
 RUN apt-get install -y nginx
 
 # Add files
+## Starting script
+ADD root/entrypoint.sh /entrypoint.sh
 ## default configuration for webserver
 ADD root/default-nginx /etc/nginx/sites-available/default
 ADD root/nginx.service /lib/systemd/system/nginx.service
+### Fix for nginx-php
+RUN mkdir -p /run/php/ && touch /run/php/php7.2-fmp.sock
 ## default configuration for git
 ADD root/.gitconfig /root/.gitconfig
 
@@ -51,5 +56,5 @@ EXPOSE 80/tcp
 EXPOSE 80/udp
 
 # Start new container
-CMD ['/bin/bash']
+CMD ['/bin/bash /entrypoint.sh']
 
