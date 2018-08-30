@@ -22,5 +22,5 @@ Testlink Docker Custom Image
 
 ### Using an alias to rebuild fast while development
 
-+ Add this alias to your  ```~/.bashrc``` : ```alias tl-docker='docker build -t netzuloqa/testlink --file ./DockerFile . && docker run -it -p 88:80 netzuloqa/testlink /bin/bash'```
++ Add this alias to your  ```~/.bashrc``` : ```alias tl-docker='docker build -t netzuloqa/testlink --file ./DockerFile . && docker run -it -p 88:80 --volume /opt/containers/tl-docker/volumes/testlink-code:/var/www/testlink-code netzuloqa/testlink /bin/bash'```
 

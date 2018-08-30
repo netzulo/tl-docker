@@ -9,9 +9,9 @@ FROM ubuntu:18.04
 
 MAINTAINER Netzulo.com
 
-LABEL version="0.0.2"
+LABEL version="0.0.3"
 LABEL vendor="Netzulo OpenSource Development"
-LABEL release-date="2018-08-12"
+LABEL release-date="2018-08-30"
 LABEL version.is-production=""
 
 # ENVironment variables
@@ -30,7 +30,7 @@ RUN apt-get install -y nginx
 
 # Add files
 ## Starting script
-ADD root/entrypoint.sh /entrypoint.sh
+ADD root/entrypoint.sh /root/entrypoint.sh
 ## default configuration for webserver
 ADD root/default-nginx /etc/nginx/sites-available/default
 ADD root/nginx.service /lib/systemd/system/nginx.service
@@ -43,7 +43,7 @@ ADD root/.gitconfig /root/.gitconfig
 RUN \
   mkdir -p /var/www && \
   cd /var/www && \
-  git clone -b master https://github.com/netzulo/testlink-code
+  git clone -b testlink_1_9_bootstrapUX https://github.com/netzulo/testlink-code
 
 # Set environment variables
 ENV HOME /root
@@ -56,5 +56,5 @@ EXPOSE 80/tcp
 EXPOSE 80/udp
 
 # Start new container
-CMD ['/bin/bash /entrypoint.sh']
+CMD ['/bin/bash entrypoint.sh']
 
