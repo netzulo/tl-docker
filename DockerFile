@@ -45,6 +45,14 @@ RUN \
   cd /var/www && \
   git clone -b testlink_1_9_bootstrapUX https://github.com/netzulo/testlink-code
 
+# Configure for Testlink first install 
+RUN \
+  mkdir -p /var/testlink/logs
+  mkdir -p /var/testlink/upload_area
+  chown -R www-data:www-data /var/testlink/logs
+  chown -R www-data:www-data /var/testlink/upload_area
+  chown -R www-data:www-data /var/www/testlink-code/gui/templates_c
+
 # Set environment variables
 ENV HOME /root
 
