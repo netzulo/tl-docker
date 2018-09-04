@@ -9,24 +9,28 @@ FROM ubuntu:18.04
 
 MAINTAINER Netzulo.com
 
-LABEL version="0.0.3"
+LABEL version="0.0.4"
 LABEL vendor="Netzulo OpenSource Development"
-LABEL release-date="2018-08-30"
+LABEL release-date="2018-09-04"
 LABEL version.is-production=""
 
 # ENVironment variables
 ENV DEBIAN_FRONTEND noninteractive
+ENV HOME /root
+ENV TL_DB_HOST localhost
+ENV TL_DB_PORT 3306
+ENV TL_DB_USER root
 
 # Update SO
-RUN apt-get update
-RUN apt-get install -y software-properties-common systemd
-RUN apt-get clean
+RUN apt-get update && \
+  apt-get install -y software-properties-common systemd && \
+  apt-get clean && \
 # Install
-RUN apt-get install -y curl git htop man unzip vim wget telnet net-tools
-
+  apt-get install -y curl git htop man unzip vim wget telnet net-tools && \
 # ~ install testlink webserver
-RUN apt-get install -y php php-cli php-pear php-fpm php-dev php-zip php-curl php-xmlrpc php-gd php-mysql php-mbstring php-xml libapache2-mod-php php-cgi
-RUN apt-get install -y nginx
+  apt-get install -y php php-cli php-pear php-fpm php-dev php-zip php-curl php-xmlrpc php-gd php-mysql php-mbstring php-xml libapache2-mod-php php-cgi nginx && \
+# ~ install testlink database
+  apt-get install -y mariadb-server mariadb-client
 
 # Add files
 ## Starting script
@@ -38,6 +42,9 @@ ADD root/nginx.service /lib/systemd/system/nginx.service
 RUN mkdir -p /run/php/ && touch /run/php/php7.2-fmp.sock
 ## default configuration for git
 ADD root/.gitconfig /root/.gitconfig
+## Config for MariaDB
+ADD root/mariadb.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+ADD root/db_create_users.sh /root/db_create_users.sh
 
 # Clone testlink repository
 RUN \
@@ -47,14 +54,11 @@ RUN \
 
 # Configure for Testlink first install 
 RUN \
-  mkdir -p /var/testlink/logs \
-  mkdir -p /var/testlink/upload_area \
-  chown -R www-data:www-data /var/testlink/logs \
-  chown -R www-data:www-data /var/testlink/upload_area \
+  mkdir -p /var/testlink/logs && \
+  mkdir -p /var/testlink/upload_area && \
+  chown -R www-data:www-data /var/testlink/logs && \
+  chown -R www-data:www-data /var/testlink/upload_area && \
   chown -R www-data:www-data /var/www/testlink-code/gui/templates_c
-
-# Set environment variables
-ENV HOME /root
 
 # Define working directory
 WORKDIR /root
@@ -62,7 +66,11 @@ WORKDIR /root
 # Expose ports for nginx ( just documented, not neccessary )
 EXPOSE 80/tcp
 EXPOSE 80/udp
+# Expose ports for mysql ( just documented, not neccessary )
+EXPOSE 3306/tcp
+EXPOSE 3306/udp
 
 # Start new container
-CMD ['/bin/bash entrypoint.sh']
+RUN chmod 755 /root/entrypoint.sh
+CMD ['/bin/bash /root/entrypoint.sh']
 
