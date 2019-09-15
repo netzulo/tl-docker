@@ -50,7 +50,7 @@ ADD root/db_create_users.sh /root/db_create_users.sh
 RUN \
   mkdir -p /var/www && \
   cd /var/www && \
-  git clone -b tl_add_boostrap https://github.com/netzulo/testlink-code
+  git clone -b testlink_1_9 https://github.com/netzulo/testlink-code
 
 # Configure for Testlink first install 
 RUN \
